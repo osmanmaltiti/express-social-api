@@ -7,8 +7,9 @@ import PostRoute from './routes/postRoute';
 import UserRoute from './routes/userRoute';
 
 const app: Application = Express();
-export const prisma = new PrismaClient();
 const port = (process.env.PORT as string) || 8000;
+export const prisma = new PrismaClient();
+// mongoose.connect('mongodb://localhost:27017/mockdb');
 
 dotenv.config({
   path: '../.env',

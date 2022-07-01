@@ -10,7 +10,7 @@ import {
   getPostInteractionCount,
   getUserPosts,
 } from '../controllers/Posts/getPost';
-import { authenticate } from './../middlewares/verifyToken';
+import { authenticate } from '../middlewares/authentication';
 
 const router = Express.Router();
 

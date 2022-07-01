@@ -1,8 +1,7 @@
 import { NextFunction, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import { JwtPayload } from './../../node_modules/@types/jsonwebtoken/index.d';
-import { CustomRequest } from './../@types/index.d';
-import { prisma } from './../index';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { CustomRequest } from '../@types';
+import { prisma } from '../index';
 
 export const authenticate = (
   req: CustomRequest,

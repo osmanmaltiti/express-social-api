@@ -2,6 +2,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Request, Response } from 'express';
 import { CustomRequest } from '../../@types';
 import { prisma } from '../../index';
+import { Post } from './createPost';
 
 export const getAllPosts = async (_: any, res: Response) => {
   try {
@@ -84,17 +85,9 @@ export const getPostInteractionCount = async (req: Request, res: Response) => {
         where: { postId },
       });
 
-      const likesCount = await prisma.like.count({
-        where: { postId },
-      });
+      const likesUnlikes = await Post.findOne({ postId });
 
-      const unlikesCount = await prisma.unlike.count({
-        where: { postId },
-      });
-
-      res
-        .status(200)
-        .json({ status: 'Success', commentsCount, likesCount, unlikesCount });
+      res.status(200).json({ status: 'Success', commentsCount, likesUnlikes });
     } else {
       res.status(400).json({ status: 'Failed', message: 'Post Not Found' });
     }

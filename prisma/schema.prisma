@@ -26,23 +26,7 @@ model Post {
   post String
   createdAt DateTime @default(now())
   userId String
-  likes Like[]
-  unlikes Unlike[]
   comments Comment[]
-}
-
-model Like {
-  id Int @id @unique @default(autoincrement())
-  post Post @relation(fields: [postId], references: [id])
-  postId String
-  userId String
-}
-
-model Unlike {
-  id Int @id @unique @default(autoincrement())
-  post Post @relation(fields: [postId], references: [id])
-  postId String
-  userId String
 }
 
 model Comment {

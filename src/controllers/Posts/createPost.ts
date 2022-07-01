@@ -1,7 +1,16 @@
 import { Response } from 'express';
+import mongoose from 'mongoose';
 import { v4 } from 'uuid';
 import { prisma } from '../..';
 import { CustomRequest } from '../../@types';
+
+const PostSchema = new mongoose.Schema({
+  postId: String,
+  likes: [],
+  unlikes: [],
+});
+
+export const Post = mongoose.model('Post', PostSchema);
 
 const createPost = async (req: CustomRequest, res: Response) => {
   const postId = v4();
@@ -16,6 +25,9 @@ const createPost = async (req: CustomRequest, res: Response) => {
         id: postId,
       },
     });
+
+    const createNosqlPost = new Post({ postId, likes: [], unlikes: [] });
+    createNosqlPost.save();
 
     res.status(200).json({ status: 'Success', data: createPost });
   } catch (error) {

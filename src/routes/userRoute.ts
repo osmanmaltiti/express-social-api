@@ -2,7 +2,7 @@ import Express from 'express';
 import createUser from '../controllers/Users/createUser';
 import { getProfile } from '../controllers/Users/getProfile';
 import getUser from '../controllers/Users/getUser';
-import { authenticate } from './../middlewares/verifyToken';
+import { authenticate } from '../middlewares/authentication';
 
 const router = Express.Router();
 
