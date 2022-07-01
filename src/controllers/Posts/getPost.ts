@@ -8,7 +8,7 @@ export const getAllPosts = async (_: any, res: Response) => {
     const post = await prisma.post.findMany({
       take: 10,
       orderBy: {
-        createdAt: 'asc',
+        createdAt: 'desc',
       },
     });
 
@@ -29,8 +29,8 @@ export const getUserPosts = async (req: CustomRequest, res: Response) => {
     const post = await prisma.post.findMany({
       where: { userId: uid },
       take: 5,
-      include: {
-        comments: true,
+      orderBy: {
+        createdAt: 'desc',
       },
     });
 
@@ -53,10 +53,8 @@ export const getOthersPosts = async (req: Request, res: Response) => {
       select: {
         posts: {
           take: 10,
-          include: {
-            comments: true,
-            likes: true,
-            unlikes: true,
+          orderBy: {
+            createdAt: 'desc',
           },
         },
       },
@@ -76,20 +74,33 @@ export const getOthersPosts = async (req: Request, res: Response) => {
 
 export const getPostInteractionCount = async (req: Request, res: Response) => {
   const { postId } = req.body;
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+    });
 
-  const commentsCount = await prisma.comment.count({
-    where: { postId },
-  });
+    if (post) {
+      const commentsCount = await prisma.comment.count({
+        where: { postId },
+      });
 
-  const likesCount = await prisma.like.count({
-    where: { postId },
-  });
+      const likesCount = await prisma.like.count({
+        where: { postId },
+      });
 
-  const unlikesCount = await prisma.comment.count({
-    where: { postId },
-  });
+      const unlikesCount = await prisma.unlike.count({
+        where: { postId },
+      });
 
-  res
-    .status(200)
-    .json({ status: 'Success', commentsCount, likesCount, unlikesCount });
+      res
+        .status(200)
+        .json({ status: 'Success', commentsCount, likesCount, unlikesCount });
+    } else {
+      res.status(400).json({ status: 'Failed', message: 'Post Not Found' });
+    }
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      res.status(400).json({ status: 'Failed', message: error.meta?.cause });
+    }
+  }
 };

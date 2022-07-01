@@ -48,6 +48,7 @@ model Unlike {
 model Comment {
   id Int @id @unique @default(autoincrement())
   post Post @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now())
   postId String
   userId String
   comment String

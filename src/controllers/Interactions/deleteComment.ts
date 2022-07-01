@@ -3,20 +3,15 @@ import { Response } from 'express';
 import { prisma } from '../..';
 import { CustomRequest } from '../../@types';
 
-export const createComment = async (req: CustomRequest, res: Response) => {
-  const { postId, comment } = req.body;
-  const uid = String(req.decode);
+export const deleteComment = async (req: CustomRequest, res: Response) => {
+  const { id } = req.query;
 
   try {
-    const createdComment = await prisma.comment.create({
-      data: {
-        postId,
-        comment,
-        userId: uid,
-      },
+    const deletedComment = await prisma.comment.delete({
+      where: { id: Number(id) },
     });
 
-    res.status(200).json({ status: 'Success', data: createdComment });
+    res.status(200).json({ status: 'Success', data: deletedComment });
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       res.status(400).json({ status: 'Failed', message: error.meta?.cause });

@@ -4,7 +4,7 @@ import { JwtPayload } from './../../node_modules/@types/jsonwebtoken/index.d';
 import { CustomRequest } from './../@types/index.d';
 import { prisma } from './../index';
 
-export const verifyToken = (
+export const authenticate = (
   req: CustomRequest,
   res: Response,
   next: NextFunction

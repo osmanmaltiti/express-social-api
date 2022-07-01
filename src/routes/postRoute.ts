@@ -1,4 +1,7 @@
 import Express from 'express';
+import { createComment } from '../controllers/Interactions/createComment';
+import { deleteComment } from '../controllers/Interactions/deleteComment';
+import { getComments } from '../controllers/Interactions/getComment';
 import createPost from '../controllers/Posts/createPost';
 import deletePost from '../controllers/Posts/deletePost';
 import {
@@ -7,20 +10,26 @@ import {
   getPostInteractionCount,
   getUserPosts,
 } from '../controllers/Posts/getPost';
-import { verifyToken } from './../middlewares/verifyToken';
+import { authenticate } from './../middlewares/verifyToken';
 
 const router = Express.Router();
 
-router.post('/create-post', verifyToken, createPost);
+router.post('/create-post', authenticate, createPost);
 
-router.get('/get-all-posts', verifyToken, getAllPosts);
+router.post('/create-comment', authenticate, createComment);
 
-router.get('/get-user-posts', verifyToken, getUserPosts);
+router.get('/get-all-posts', authenticate, getAllPosts);
 
-router.get('/get-others-posts', verifyToken, getOthersPosts);
+router.get('/get-user-posts', authenticate, getUserPosts);
 
-router.get('/get-interactions-count', verifyToken, getPostInteractionCount);
+router.get('/get-others-posts', authenticate, getOthersPosts);
 
-router.delete('/delete-post', verifyToken, deletePost);
+router.get('/get-comments', authenticate, getComments);
+
+router.get('/get-interactions-count', authenticate, getPostInteractionCount);
+
+router.delete('/delete-post', authenticate, deletePost);
+
+router.delete('/delete-comment', authenticate, deleteComment);
 
 export default router;

@@ -3,20 +3,19 @@ import { Response } from 'express';
 import { prisma } from '../..';
 import { CustomRequest } from '../../@types';
 
-export const createComment = async (req: CustomRequest, res: Response) => {
-  const { postId, comment } = req.body;
-  const uid = String(req.decode);
+export const getComments = async (req: CustomRequest, res: Response) => {
+  const { postId } = req.query;
 
   try {
-    const createdComment = await prisma.comment.create({
-      data: {
-        postId,
-        comment,
-        userId: uid,
+    const comments = await prisma.comment.findMany({
+      where: { postId: String(postId) },
+      take: 10,
+      orderBy: {
+        createdAt: 'asc',
       },
     });
 
-    res.status(200).json({ status: 'Success', data: createdComment });
+    res.json({ state: 'Success', data: comments });
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       res.status(400).json({ status: 'Failed', message: error.meta?.cause });
