@@ -1,0 +1,26 @@
+services:
+  mock-api-services:
+    container_name: mock-api
+    build: ./
+    command: npm start
+    working_dir: /usr/src/mock-api
+    ports:
+      - '5000:5000'
+    env_file:
+      - .env.production
+    volumes:
+      - ./:/usr/src/mock-api
+    links:
+      - 'mock-database'
+
+  mock-database:
+    container_name: mock-db
+    image: postgres:latest
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: osmanmaltiti
+      POSTGRES_PASSWORD: hero108
+      POSTGRES_DB: mockdb
+      POSTGRES_HOST: postgres
