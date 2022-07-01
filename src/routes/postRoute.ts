@@ -1,5 +1,6 @@
 import Express from 'express';
 import createPost from '../controllers/Posts/createPost';
+import deletePost from '../controllers/Posts/deletePost';
 import {
   getAllPosts,
   getOthersPosts,
@@ -19,5 +20,7 @@ router.get('/get-user-posts', verifyToken, getUserPosts);
 router.get('/get-others-posts', verifyToken, getOthersPosts);
 
 router.get('/get-interactions-count', verifyToken, getPostInteractionCount);
+
+router.delete('/delete-post', verifyToken, deletePost);
 
 export default router;
