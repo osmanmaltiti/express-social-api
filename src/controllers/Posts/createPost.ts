@@ -27,7 +27,7 @@ const createPost = async (req: CustomRequest, res: Response) => {
     });
 
     const createNosqlPost = new Post({ postId, likes: [], unlikes: [] });
-    createNosqlPost.save();
+    await createNosqlPost.save();
 
     res.status(200).json({ status: 'Success', data: createPost });
   } catch (error) {

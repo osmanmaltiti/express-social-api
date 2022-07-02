@@ -87,7 +87,14 @@ export const getPostInteractionCount = async (req: Request, res: Response) => {
 
       const likesUnlikes = await Post.findOne({ postId });
 
-      res.status(200).json({ status: 'Success', commentsCount, likesUnlikes });
+      if (likesUnlikes) {
+        const likesCount = likesUnlikes.likes?.length;
+        const unlikesCount = likesUnlikes.unlikes?.length;
+
+        res
+          .status(200)
+          .json({ status: 'Success', commentsCount, likesCount, unlikesCount });
+      }
     } else {
       res.status(400).json({ status: 'Failed', message: 'Post Not Found' });
     }

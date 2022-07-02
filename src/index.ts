@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import Express, { Application, Response } from 'express';
+import mongoose from 'mongoose';
 import morgan from 'morgan';
 import PostRoute from './routes/postRoute';
 import UserRoute from './routes/userRoute';
@@ -9,7 +10,7 @@ import UserRoute from './routes/userRoute';
 const app: Application = Express();
 const port = (process.env.PORT as string) || 8000;
 export const prisma = new PrismaClient();
-// mongoose.connect('mongodb://localhost:27017/mockdb');
+mongoose.connect('mongodb://0.0.0.0:27017/mockdb');
 
 dotenv.config({
   path: '../.env',
