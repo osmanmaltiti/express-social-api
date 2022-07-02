@@ -2,6 +2,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Request, Response } from 'express';
 import { v4 } from 'uuid';
 import { prisma } from '../..';
+import { User } from '../../../mongoose/Schema';
 import { encryptPassword } from '../../helpers/encryption';
 import { createSession } from '../../helpers/session';
 
@@ -22,7 +23,15 @@ const createUser = async (req: Request, res: Response) => {
         bio,
       },
     });
+
     const token = await createSession(email);
+    const createNosqlUser = new User({
+      uid: createdUser.id,
+      followers: [],
+      following: [],
+    });
+    await createNosqlUser.save();
+
     res.json({ status: 'Success', uid: createdUser.id, token });
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {

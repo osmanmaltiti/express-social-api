@@ -1,13 +1,16 @@
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Request, Response } from 'express';
+import { Post } from '../../../mongoose/Schema';
 import { CustomRequest } from '../../@types';
 import { prisma } from '../../index';
-import { Post } from './createPost';
 
-export const getAllPosts = async (_: any, res: Response) => {
+export const getAllPosts = async (req: CustomRequest, res: Response) => {
+  const { skip } = req.query;
+
   try {
     const post = await prisma.post.findMany({
       take: 10,
+      skip: Number(skip),
       orderBy: {
         createdAt: 'desc',
       },
@@ -25,11 +28,13 @@ export const getAllPosts = async (_: any, res: Response) => {
 
 export const getUserPosts = async (req: CustomRequest, res: Response) => {
   const uid = String(req.decode);
+  const { skip } = req.query;
 
   try {
     const post = await prisma.post.findMany({
       where: { userId: uid },
-      take: 5,
+      take: 10,
+      skip: Number(skip),
       orderBy: {
         createdAt: 'desc',
       },
@@ -47,6 +52,7 @@ export const getUserPosts = async (req: CustomRequest, res: Response) => {
 
 export const getOthersPosts = async (req: Request, res: Response) => {
   const { email } = req.body;
+  const { skip } = req.query;
 
   try {
     const post = await prisma.user.findUnique({
@@ -54,6 +60,7 @@ export const getOthersPosts = async (req: Request, res: Response) => {
       select: {
         posts: {
           take: 10,
+          skip: Number(skip),
           orderBy: {
             createdAt: 'desc',
           },
