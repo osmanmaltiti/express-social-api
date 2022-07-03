@@ -1,10 +1,10 @@
 import { Response } from 'express';
 import createHttpError from 'http-errors';
 import { prisma } from '../..';
-import { User } from '../../../mongoose/Schema';
+import { User } from '../../../mongoose/schema';
 import { CustomRequest } from '../../@types';
 
-const postNotFound = new createHttpError.BadRequest();
+const userNotFound = new createHttpError.BadRequest();
 
 export const followUser = async (req: CustomRequest, res: Response) => {
   const { email } = req.body;
@@ -50,6 +50,10 @@ export const followUser = async (req: CustomRequest, res: Response) => {
           );
         }
       }
+    } else {
+      userNotFound.message = 'User Not Found';
+      userNotFound.status = 400;
+      throw userNotFound;
     }
   } catch (error) {
     if (error instanceof createHttpError.HttpError) {

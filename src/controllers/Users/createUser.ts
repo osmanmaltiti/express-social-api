@@ -2,7 +2,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Request, Response } from 'express';
 import { v4 } from 'uuid';
 import { prisma } from '../..';
-import { User } from '../../../mongoose/Schema';
+import { User } from '../../../mongoose/schema';
 import { encryptPassword } from '../../helpers/encryption';
 import { createSession } from '../../helpers/session';
 
