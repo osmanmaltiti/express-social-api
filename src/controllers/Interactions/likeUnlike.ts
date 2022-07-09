@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import createHttpError from 'http-errors';
-import { Post } from '../../../mongoose/Schema';
 import { CustomRequest } from '../../@types';
+import { Post } from '../../mongoose/schema';
 
 const postNotFound = new createHttpError.BadRequest();
 

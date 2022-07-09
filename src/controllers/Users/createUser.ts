@@ -2,9 +2,9 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Request, Response } from 'express';
 import { v4 } from 'uuid';
 import { prisma } from '../..';
-import { User } from '../../../mongoose/schema';
 import { encryptPassword } from '../../helpers/encryption';
 import { createSession } from '../../helpers/session';
+import { User } from '../../mongoose/schema';
 
 const createUser = async (req: Request, res: Response) => {
   const uid = v4();
@@ -32,11 +32,11 @@ const createUser = async (req: Request, res: Response) => {
     });
     await createNosqlUser.save();
 
-    res.json({ status: 'Success', uid: createdUser.id, token });
+    res.status(200).json({ status: 'Success', uid: createdUser.id, token });
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
-        res.json({
+        res.status(401).json({
           status: 'Failed',
           message: error.meta?.target + ' already exists',
         });

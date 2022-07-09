@@ -1,8 +1,8 @@
 import { Response } from 'express';
 import createHttpError from 'http-errors';
 import { prisma } from '../..';
-import { User } from '../../../mongoose/schema';
 import { CustomRequest } from '../../@types';
+import { User } from '../../mongoose/schema';
 
 const userNotFound = new createHttpError.BadRequest();
 

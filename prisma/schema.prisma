@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id String @unique @id
+  id String @unique
   fullname String
   username String @unique
   email String @unique
@@ -18,15 +18,21 @@ model User {
   bio String
   createdAt DateTime @default(now())
   posts Post[]
+
+  @@id([id, username, fullname])
 }
 
 model Post {
   id String @unique @id
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId, userName, fullName], references: [id, username, fullname])
   post String
   createdAt DateTime @default(now())
   userId String
+  fullName String
+  userName String
   comments Comment[]
+  
+  @@unique([userId, userName, fullName])
 }
 
 model Comment {

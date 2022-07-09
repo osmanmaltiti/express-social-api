@@ -1,8 +1,8 @@
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Request, Response } from 'express';
-import { Post } from '../../../mongoose/Schema';
 import { CustomRequest } from '../../@types';
 import { prisma } from '../../index';
+import { Post } from '../../mongoose/schema';
 
 export const getAllPosts = async (req: CustomRequest, res: Response) => {
   const { skip } = req.query;
