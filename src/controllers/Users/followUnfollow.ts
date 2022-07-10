@@ -36,6 +36,8 @@ export const followUser = async (req: CustomRequest, res: Response) => {
             { followers: updateTargetFollowers }
           );
           await User.updateOne({ uid }, { following: updateUserFollowing });
+
+          res.status(200).json({ status: 'Success', message: 'Unfollowed' });
         } else {
           const targetFollowers = targetuser.followers as [];
           const userFollowing = currentuser?.following as [];
@@ -48,6 +50,50 @@ export const followUser = async (req: CustomRequest, res: Response) => {
             { uid },
             { following: [...userFollowing, targetUser.id] }
           );
+
+          res.status(200).json({ status: 'Success', message: 'Followed' });
+        }
+      }
+    } else {
+      userNotFound.message = 'User Not Found';
+      userNotFound.status = 400;
+      throw userNotFound;
+    }
+  } catch (error) {
+    if (error instanceof createHttpError.HttpError) {
+      res
+        .status(error.status)
+        .json({ status: 'Failed', message: error.message });
+    }
+  }
+};
+
+export const getFollowStatus = async (req: CustomRequest, res: Response) => {
+  const uid = String(req.decode);
+  const { email } = req.body;
+
+  try {
+    const targetUser = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true },
+    });
+
+    if (targetUser) {
+      const userdata = await User.findOne({ uid }).select({
+        following: 1,
+        followers: 1,
+      });
+
+      if (userdata) {
+        const { followers, following } = userdata;
+        if (following && followers) {
+          const userFollows = following.some((item) => item === targetUser.id);
+          const followsUser = followers.some((item) => item === targetUser.id);
+
+          res.status(200).json({
+            status: 'Success',
+            data: { following: userFollows, follower: followsUser },
+          });
         }
       }
     } else {

@@ -80,27 +80,42 @@ export const getOthersPosts = async (req: Request, res: Response) => {
   }
 };
 
-export const getPostInteractionCount = async (req: Request, res: Response) => {
-  const { postId } = req.body;
+export const getPostInteractionCount = async (
+  req: CustomRequest,
+  res: Response
+) => {
+  const uid = String(req.decode);
+  const { postId } = req.query;
   try {
     const post = await prisma.post.findUnique({
-      where: { id: postId },
+      where: { id: String(postId) },
     });
 
     if (post) {
       const commentsCount = await prisma.comment.count({
-        where: { postId },
+        where: { postId: String(postId) },
       });
 
-      const likesUnlikes = await Post.findOne({ postId });
+      const likesUnlikes = await Post.findOne({ postId: String(postId) });
 
       if (likesUnlikes) {
-        const likesCount = likesUnlikes.likes?.length;
-        const unlikesCount = likesUnlikes.unlikes?.length;
+        const { likes, unlikes } = likesUnlikes;
 
-        res
-          .status(200)
-          .json({ status: 'Success', commentsCount, likesCount, unlikesCount });
+        if (likes && unlikes) {
+          const likesCount = likes.length;
+          const unlikesCount = unlikes.length;
+          const hasLiked = likes.some((item) => item === uid);
+          const hasUnliked = unlikes.some((item) => item === uid);
+
+          res.status(200).json({
+            status: 'Success',
+            commentsCount,
+            likesCount,
+            unlikesCount,
+            hasLiked,
+            hasUnliked,
+          });
+        }
       }
     } else {
       res.status(400).json({ status: 'Failed', message: 'Post Not Found' });

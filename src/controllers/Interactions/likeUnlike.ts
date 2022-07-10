@@ -25,7 +25,7 @@ export const likePost = async (req: CustomRequest, res: Response) => {
 
         res
           .status(200)
-          .json({ status: 'Success', data: updateLikes.acknowledged });
+          .json({ status: 'Success', message: updateLikes.acknowledged });
       } else {
         const postLikes = post.likes as [];
         const liked = await Post.updateOne(
@@ -38,7 +38,9 @@ export const likePost = async (req: CustomRequest, res: Response) => {
           await Post.updateOne({ postId }, { unlikes: removeUnlike });
         }
 
-        res.status(200).json({ status: 'Success', data: liked.acknowledged });
+        res
+          .status(200)
+          .json({ status: 'Success', message: liked.acknowledged });
       }
     } else {
       postNotFound.message = 'Post Not Found';
@@ -73,7 +75,7 @@ export const unlikePost = async (req: CustomRequest, res: Response) => {
 
         res
           .status(200)
-          .json({ status: 'Success', data: updateUnlikes.acknowledged });
+          .json({ status: 'Success', message: updateUnlikes.acknowledged });
       } else {
         const postUnlikes = post.unlikes as [];
         const unliked = await Post.updateOne(
@@ -86,7 +88,9 @@ export const unlikePost = async (req: CustomRequest, res: Response) => {
           await Post.updateOne({ postId }, { likes: removeLike });
         }
 
-        res.status(200).json({ status: 'Success', data: unliked.acknowledged });
+        res
+          .status(200)
+          .json({ status: 'Success', message: unliked.acknowledged });
       }
     } else {
       postNotFound.message = 'Post Not Found';

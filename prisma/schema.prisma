@@ -31,8 +31,6 @@ model Post {
   fullName String
   userName String
   comments Comment[]
-  
-  @@unique([userId, userName, fullName])
 }
 
 model Comment {

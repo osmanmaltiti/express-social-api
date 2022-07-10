@@ -1,9 +1,10 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { prisma } from '../..';
+import { CustomRequest } from '../../@types';
 import { verifyPassword } from '../../helpers/encryption';
 import { createSession } from '../../helpers/session';
 
-const getUser = async (req: Request, res: Response) => {
+const getUser = async (req: CustomRequest, res: Response) => {
   const { email, password } = req.body;
 
   const userdata = await prisma.user.findUnique({
@@ -29,3 +30,18 @@ const getUser = async (req: Request, res: Response) => {
 };
 
 export default getUser;
+
+export const getPopularUsers = async (req: CustomRequest, res: Response) => {
+  const userdata = await prisma.user.findMany({
+    select: {
+      fullname: true,
+      email: true,
+    },
+  });
+
+  userdata
+    ? res.status(200).json({ status: 'Success', data: userdata })
+    : res
+        .status(401)
+        .json({ status: 'Failed', message: 'Invalid email or password' });
+};
