@@ -4,7 +4,7 @@ import { prisma } from '../..';
 import { CustomRequest } from '../../@types';
 import { Post } from '../../mongoose/schema';
 
-const createPost = async (req: CustomRequest, res: Response) => {
+export const createPost = async (req: CustomRequest, res: Response) => {
   const postId = v4();
   const { post } = req.body;
   const uid = String(req.decode);
@@ -40,4 +40,44 @@ const createPost = async (req: CustomRequest, res: Response) => {
   }
 };
 
-export default createPost;
+export const createImagePost = async (req: CustomRequest, res: Response) => {
+  const postId = v4();
+  const imagePost = req.file;
+  const uid = String(req.decode);
+
+  try {
+    if (imagePost) {
+      const getProfile = await prisma.user.findUnique({
+        where: {
+          id: uid,
+        },
+      });
+
+      if (getProfile) {
+        const { username, fullname } = getProfile;
+        const createPost = await prisma.post.create({
+          data: {
+            post: `${username}/${imagePost.filename}`,
+            id: postId,
+            userId: uid,
+            userName: username,
+            fullName: fullname,
+          },
+        });
+
+        const createNosqlPost = new Post({ postId, likes: [], unlikes: [] });
+        await createNosqlPost.save();
+
+        res.status(200).json({ status: 'Success', data: createPost });
+      }
+    } else {
+      res
+        .status(400)
+        .json({ status: 'Failed', message: 'Failed to upload image' });
+    }
+  } catch (error) {
+    res
+      .status(400)
+      .json({ status: 'Failed', message: 'Failed to create post' });
+  }
+};

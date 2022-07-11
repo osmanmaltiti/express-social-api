@@ -1,5 +1,6 @@
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Request, Response } from 'express';
+import path from 'path';
 import { CustomRequest } from '../../@types';
 import { prisma } from '../../index';
 import { Post } from '../../mongoose/schema';
@@ -78,6 +79,12 @@ export const getOthersPosts = async (req: Request, res: Response) => {
         .json({ status: 'Failed', message: error.message });
     }
   }
+};
+
+export const getImage = async (req: CustomRequest, res: Response) => {
+  const { imageurl } = req.query;
+
+  res.sendFile(path.join(__dirname, `../../../public/images/${imageurl}`));
 };
 
 export const getPostInteractionCount = async (

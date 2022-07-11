@@ -3,10 +3,11 @@ import { createComment } from '../controllers/Interactions/createComment';
 import { deleteComment } from '../controllers/Interactions/deleteComment';
 import { getComments } from '../controllers/Interactions/getComment';
 import { likePost, unlikePost } from '../controllers/Interactions/likeUnlike';
-import createPost from '../controllers/Posts/createPost';
+import { createImagePost, createPost } from '../controllers/Posts/createPost';
 import deletePost from '../controllers/Posts/deletePost';
 import {
   getAllPosts,
+  getImage,
   getOthersPosts,
   getPostInteractionCount,
   getUserPosts,
@@ -17,11 +18,15 @@ const router = Express.Router();
 
 router.post('/create-post', authenticate, createPost);
 
+router.post('/create-image-post', authenticate, createImagePost);
+
 router.post('/create-comment', authenticate, createComment);
 
 router.post('/like-post', authenticate, likePost);
 
 router.post('/unlike-post', authenticate, unlikePost);
+
+router.get('/get-image', getImage);
 
 router.get('/get-all-posts', authenticate, getAllPosts);
 
