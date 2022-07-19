@@ -9,12 +9,13 @@ import { User } from '../../mongoose/schema';
 const createUser = async (req: Request, res: Response) => {
   const uid = v4();
   const { fullname, email, username, password, age, bio } = req.body;
+  const splitName = String(username).split('').slice(0, 4);
 
   try {
     const encryptedPassword = encryptPassword(password);
     const createdUser = await prisma.user.create({
       data: {
-        id: uid,
+        id: splitName.join('').toUpperCase() + '-' + uid,
         fullname,
         email,
         username,
@@ -32,7 +33,7 @@ const createUser = async (req: Request, res: Response) => {
     });
     await createNosqlUser.save();
 
-    res.status(200).json({ status: 'Success', uid: createdUser.id, token });
+    res.status(200).json({ status: 'Success', id: createdUser.id, token });
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {

@@ -6,8 +6,7 @@ import { Post } from '../../mongoose/schema';
 const postNotFound = new createHttpError.BadRequest();
 
 export const likePost = async (req: CustomRequest, res: Response) => {
-  const { postId } = req.body;
-  const uid = String(req.decode);
+  const { postId, uid } = req.body;
 
   try {
     const post = await Post.findOne({ postId });
@@ -56,8 +55,7 @@ export const likePost = async (req: CustomRequest, res: Response) => {
 };
 
 export const unlikePost = async (req: CustomRequest, res: Response) => {
-  const { postId } = req.body;
-  const uid = String(req.decode);
+  const { postId, uid } = req.body;
 
   try {
     const post = await Post.findOne({ postId });

@@ -7,8 +7,7 @@ import { User } from '../../mongoose/schema';
 const userNotFound = new createHttpError.BadRequest();
 
 export const followUser = async (req: CustomRequest, res: Response) => {
-  const { email } = req.body;
-  const uid = String(req.decode);
+  const { email, uid } = req.body;
 
   try {
     const targetUser = await prisma.user.findUnique({
@@ -69,8 +68,7 @@ export const followUser = async (req: CustomRequest, res: Response) => {
 };
 
 export const getFollowStatus = async (req: CustomRequest, res: Response) => {
-  const uid = String(req.decode);
-  const { email } = req.body;
+  const { email, uid } = req.body;
 
   try {
     const targetUser = await prisma.user.findUnique({
