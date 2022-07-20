@@ -7,6 +7,7 @@ import { Post } from '../../mongoose/schema';
 export const createPost = async (req: CustomRequest, res: Response) => {
   const postId = v4();
   const { post } = req.body;
+  const imagePost = req.file;
   const uid = String(req.decode);
 
   try {
@@ -20,11 +21,12 @@ export const createPost = async (req: CustomRequest, res: Response) => {
       const { username, fullname } = getProfile;
       const createPost = await prisma.post.create({
         data: {
-          post,
           id: postId,
           userId: uid,
           userName: username,
           fullName: fullname,
+          post: post ? post : '',
+          media: imagePost ? `${username}/${imagePost.filename}` : '',
         },
       });
 
@@ -32,48 +34,6 @@ export const createPost = async (req: CustomRequest, res: Response) => {
       await createNosqlPost.save();
 
       res.status(200).json({ status: 'Success', data: createPost });
-    }
-  } catch (error) {
-    res
-      .status(400)
-      .json({ status: 'Failed', message: 'Failed to create post' });
-  }
-};
-
-export const createImagePost = async (req: CustomRequest, res: Response) => {
-  const postId = v4();
-  const imagePost = req.file;
-  const uid = String(req.decode);
-
-  try {
-    if (imagePost) {
-      const getProfile = await prisma.user.findUnique({
-        where: {
-          id: uid,
-        },
-      });
-
-      if (getProfile) {
-        const { username, fullname } = getProfile;
-        const createPost = await prisma.post.create({
-          data: {
-            post: `${username}/${imagePost.filename}`,
-            id: postId,
-            userId: uid,
-            userName: username,
-            fullName: fullname,
-          },
-        });
-
-        const createNosqlPost = new Post({ postId, likes: [], unlikes: [] });
-        await createNosqlPost.save();
-
-        res.status(200).json({ status: 'Success', data: createPost });
-      }
-    } else {
-      res
-        .status(400)
-        .json({ status: 'Failed', message: 'Failed to upload image' });
     }
   } catch (error) {
     res

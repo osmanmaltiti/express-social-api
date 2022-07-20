@@ -26,6 +26,7 @@ model Post {
   id String @unique @id
   user User @relation(fields: [userId, userName, fullName], references: [id, username, fullname])
   post String
+  media String
   createdAt DateTime @default(now())
   userId String
   fullName String
@@ -40,4 +41,5 @@ model Comment {
   postId String
   userId String
   comment String
+  media String
 }
